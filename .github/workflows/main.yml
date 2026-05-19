@@ -6,6 +6,10 @@ on:
       - main
   workflow_dispatch:
 
+# Force l'utilisation de Node 24 pour nettoyer les avertissements GitHub
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 permissions:
   contents: read
   pages: write
@@ -37,11 +41,11 @@ jobs:
       - name: Préparer l'environnement et générer l'index
         run: |
           cd fdroid
-          # On s'assure que le dossier metadata existe pour éviter le crash (exit code 2)
+          # Crée le dossier des métadonnées s'il manque
           mkdir -p metadata
-          # Initialisation silencieuse
+          # Initialise la clé de signature du dépôt de manière totalement automatique
           fdroid init --unattended
-          # Génération forcée de l'index avec les APK présents dans 'repo'
+          # Force la création de l'index à partir de tes APK Windows
           fdroid update --create-metadata
 
       - name: Configurer Pages
@@ -50,8 +54,8 @@ jobs:
       - name: Téléverser les fichiers du dépôt
         uses: actions/upload-pages-artifact@v3
         with:
-          # On publie l'intégralité du dossier 'fdroid' qui contient désormais 'repo' et les index générés
-          path: './fdroid'
+          # On publie le sous-dossier de déploiement qui vient d'être généré par F-Droid
+          path: './fdroid/repo'
 
       - name: Déployer sur GitHub Pages
         id: deployment
