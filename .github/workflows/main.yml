@@ -6,9 +6,8 @@ on:
       - main
   workflow_dispatch:
 
-# Force l'utilisation de Node 24 pour nettoyer les avertissements GitHub
 env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+  FORCE_JUST_ACTIONS_TO_NODE24: true
 
 permissions:
   contents: read
@@ -41,16 +40,12 @@ jobs:
       - name: Préparer l'environnement et générer l'index
         run: |
           cd fdroid
-          # Crée le dossier des métadonnées s'il manque
           mkdir -p metadata
-          # Initialise proprement le dépôt
-          fdroid init --no-prompt
           
-          # MODIFICATION ICI : On remplace les fausses URL par ta vraie adresse GitHub Pages
-          sed -i 's|http://localhost:8000/fdroid/repo|https://franckrichard01.github.io/WinStars3-FDroid|g' config.yml
-          sed -i 's|https://MyFirstFDroidRepo.org/fdroid/repo|https://franckrichard01.github.io/WinStars3-FDroid|g' config.yml
+          # FORCE L'URL OFFICIELLE DÈS L'INITIALISATION
+          fdroid init --no-prompt --repo-url "https://franckrichard01.github.io/WinStars3-FDroid"
           
-          # Force la création de l'index mis à jour
+          # Force la création de l'index
           fdroid update --create-metadata
 
       - name: Configurer Pages
@@ -59,7 +54,6 @@ jobs:
       - name: Téléverser les fichiers du dépôt
         uses: actions/upload-pages-artifact@v3
         with:
-          # On publie le sous-dossier de déploiement qui vient d'être généré par F-Droid
           path: './fdroid/repo'
 
       - name: Déployer sur GitHub Pages
