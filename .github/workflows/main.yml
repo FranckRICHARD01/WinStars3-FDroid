@@ -40,9 +40,17 @@ jobs:
       - name: Préparer l'environnement et générer l'index
         run: |
           cd fdroid
+          # Crée le dossier des métadonnées
           mkdir -p metadata
-          # On initialise avec le vrai nom et la vraie URL de ton projet
-          fdroid init --no-prompt --repo-name "WinStars3 Astro Repo" --repo-icon --repo-url "https://franckrichard01.github.io/WinStars3-FDroid/"
+          
+          # 1. Initialisation brute et propre
+          fdroid init --no-prompt
+          
+          # 2. Injection propre de ta configuration dans le fichier config.yml
+          sed -i 's|^repo_name:.*|repo_name: "WinStars3 Astro Repo"|' config.yml
+          sed -i 's|^repo_url:.*|repo_url: "https://franckrichard01.github.io/WinStars3-FDroid"|' config.yml
+          
+          # 3. Génération forcée de l'index avec les bonnes infos
           fdroid update --create-metadata
 
       - name: Configurer Pages
