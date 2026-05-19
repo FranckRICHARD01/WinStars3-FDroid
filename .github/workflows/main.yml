@@ -41,11 +41,16 @@ jobs:
       - name: Préparer l'environnement et générer l'index
         run: |
           cd fdroid
-          # Crée le dossier des métadonnées
+          # Crée le dossier des métadonnées s'il manque
           mkdir -p metadata
-          # Initialisation automatique corrigée sans prompt
+          # Initialise proprement le dépôt
           fdroid init --no-prompt
-          # Force la création de l'index à partir de tes APK Windows
+          
+          # MODIFICATION ICI : On remplace les fausses URL par ta vraie adresse GitHub Pages
+          sed -i 's|http://localhost:8000/fdroid/repo|https://franckrichard01.github.io/WinStars3-FDroid|g' config.yml
+          sed -i 's|https://MyFirstFDroidRepo.org/fdroid/repo|https://franckrichard01.github.io/WinStars3-FDroid|g' config.yml
+          
+          # Force la création de l'index mis à jour
           fdroid update --create-metadata
 
       - name: Configurer Pages
