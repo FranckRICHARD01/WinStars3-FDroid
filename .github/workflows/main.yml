@@ -37,18 +37,12 @@ jobs:
         run: |
           pip install fdroidserver
 
-      - name: Préparer l'environnement et générer l'index
+     - name: Préparer l'environnement et générer l'index
         run: |
           cd fdroid
           mkdir -p metadata
-          
-          # 1. On génère le config.yml de base et la clé secrète
-          fdroid init --no-prompt
-          
-          # 2. MODIFICATION SÉCURISÉE : On change l'URL sans toucher aux clés de signature
-          sed -i 's|repo_url:.*|repo_url: "https://franckrichard01.github.io/WinStars3-FDroid/repo"|g' config.yml
-          
-          # 3. Génération de l'index
+          # On initialise avec le vrai nom et la vraie URL de ton projet
+          fdroid init --no-prompt --repo-name "WinStars3 Astro Repo" --repo-icon --repo-url "https://franckrichard01.github.io/WinStars3-FDroid/"
           fdroid update --create-metadata
 
       - name: Configurer Pages
