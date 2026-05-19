@@ -40,13 +40,28 @@ jobs:
       - name: Préparer l'environnement et générer l'index
         run: |
           cd fdroid
-          mkdir -p metadata
-          fdroid init --no-prompt
-          
-          # Correction définitive du nom et de l'URL dans la configuration
-          sed -i 's/repo_name:.*/repo_name: "WinStars 3"/g' config.yml
-          sed -i 's|repo_url:.*|repo_url: "https://franckrichard01.github.io/WinStars3-FDroid/repo"|g' config.yml
-          
+          mkdir -p metadata repo
+
+          # Initialiser seulement si config.yml n'existe pas encore
+          if [ ! -f config.yml ]; then
+            fdroid init --no-prompt
+          fi
+
+          # Écraser proprement les valeurs clés dans config.yml
+          python3 - <<'EOF'
+          import yaml
+
+          with open("config.yml", "r") as f:
+              config = yaml.safe_load(f) or {}
+
+          config["repo_name"] = "WinStars 3"
+          config["repo_url"] = "https://franckrichard01.github.io/WinStars3-FDroid/fdroid/repo"
+          config["repo_description"] = "Dépôt F-Droid pour WinStars 3"
+
+          with open("config.yml", "w") as f:
+              yaml.dump(config, f, default_flow_style=False, allow_unicode=True)
+          EOF
+
           fdroid update --create-metadata
 
       - name: Configurer Pages
