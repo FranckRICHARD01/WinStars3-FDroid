@@ -55,7 +55,7 @@ jobs:
               config = yaml.safe_load(f) or {}
 
           config["repo_name"] = "WinStars 3"
-          config["repo_url"] = "https://franckrichard01.github.io/WinStars3-FDroid/fdroid/repo"
+          config["repo_url"] = "https://franckrichard01.github.io/WinStars3-FDroid/repo"
           config["repo_description"] = "F-Droid repository for WinStars 3"
 
           with open("config.yml", "w") as f:
