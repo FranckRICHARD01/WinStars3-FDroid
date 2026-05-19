@@ -37,7 +37,7 @@ jobs:
         run: |
           pip install fdroidserver
 
-     - name: Préparer l'environnement et générer l'index
+      - name: Préparer l'environnement et générer l'index
         run: |
           cd fdroid
           mkdir -p metadata
