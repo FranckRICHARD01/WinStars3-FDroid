@@ -34,9 +34,14 @@ jobs:
         run: |
           pip install fdroidserver
 
-      - name: Générer l'index du dépôt
+      - name: Préparer l'environnement et générer l'index
         run: |
+          cd fdroid
+          # On s'assure que le dossier metadata existe pour éviter le crash (exit code 2)
+          mkdir -p metadata
+          # Initialisation silencieuse
           fdroid init --unattended
+          # Génération forcée de l'index avec les APK présents dans 'repo'
           fdroid update --create-metadata
 
       - name: Configurer Pages
@@ -45,7 +50,8 @@ jobs:
       - name: Téléverser les fichiers du dépôt
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './fdroid/repo'
+          # On publie l'intégralité du dossier 'fdroid' qui contient désormais 'repo' et les index générés
+          path: './fdroid'
 
       - name: Déployer sur GitHub Pages
         id: deployment
