@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 env:
-  FORCE_JUST_ACTIONS_TO_NODE24: true
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 permissions:
   contents: read
@@ -42,10 +42,19 @@ jobs:
           cd fdroid
           mkdir -p metadata
           
-          # FORCE L'URL OFFICIELLE DÈS L'INITIALISATION
-          fdroid init --no-prompt --repo-url "https://franckrichard01.github.io/WinStars3-FDroid"
+          # 1. On force l'initialisation de base
+          fdroid init --no-prompt
           
-          # Force la création de l'index
+          # 2. METHODE RADICALE : On écrase le fichier config.yml avec les bonnes valeurs fixes
+          cat << 'EOF' > config.yml
+          repo_url: "https://franckrichard01.github.io/WinStars3-FDroid"
+          repo_name: "WinStars3 F-Droid Repo"
+          repo_icon: "icon.png"
+          repo_description: "Dépôt F-Droid officiel pour WinStars3"
+          archive_older: 0
+          EOF
+          
+          # 3. Génération forcée de l'index avec la nouvelle configuration
           fdroid update --create-metadata
 
       - name: Configurer Pages
