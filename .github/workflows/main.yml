@@ -42,19 +42,19 @@ jobs:
           cd fdroid
           mkdir -p metadata
           
-          # 1. On force l'initialisation de base
+          # 1. On initialise le dépôt
           fdroid init --no-prompt
           
-          # 2. METHODE RADICALE : On écrase le fichier config.yml avec les bonnes valeurs fixes
+          # 2. On écrit la configuration en ajoutant impérativement /repo à la fin de l'URL
           cat << 'EOF' > config.yml
-          repo_url: "https://franckrichard01.github.io/WinStars3-FDroid"
+          repo_url: "https://franckrichard01.github.io/WinStars3-FDroid/repo"
           repo_name: "WinStars3 F-Droid Repo"
           repo_icon: "icon.png"
           repo_description: "Dépôt F-Droid officiel pour WinStars3"
           archive_older: 0
           EOF
           
-          # 3. Génération forcée de l'index avec la nouvelle configuration
+          # 3. Génération de l'index
           fdroid update --create-metadata
 
       - name: Configurer Pages
@@ -63,7 +63,8 @@ jobs:
       - name: Téléverser les fichiers du dépôt
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './fdroid/repo'
+          # IMPORTANT : On publie tout le dossier 'fdroid' pour que l'URL /repo soit valide sur le web
+          path: './fdroid'
 
       - name: Déployer sur GitHub Pages
         id: deployment
