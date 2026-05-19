@@ -40,17 +40,13 @@ jobs:
       - name: Préparer l'environnement et générer l'index
         run: |
           cd fdroid
-          # Crée le dossier des métadonnées
           mkdir -p metadata
-          
-          # 1. Initialisation brute et propre
           fdroid init --no-prompt
           
-          # 2. Injection propre de ta configuration dans le fichier config.yml
-          sed -i 's|^repo_name:.*|repo_name: "WinStars3 Astro Repo"|' config.yml
-          sed -i 's|^repo_url:.*|repo_url: "https://franckrichard01.github.io/WinStars3-FDroid"|' config.yml
+          # Correction définitive du nom et de l'URL dans la configuration
+          sed -i 's/repo_name:.*/repo_name: "WinStars 3"/g' config.yml
+          sed -i 's|repo_url:.*|repo_url: "https://franckrichard01.github.io/WinStars3-FDroid/repo"|g' config.yml
           
-          # 3. Génération forcée de l'index avec les bonnes infos
           fdroid update --create-metadata
 
       - name: Configurer Pages
@@ -59,9 +55,10 @@ jobs:
       - name: Téléverser les fichiers du dépôt
         uses: actions/upload-pages-artifact@v3
         with:
-          # On publie tout le dossier pour avoir la structure /repo/ en ligne
+          # On publie le dossier global pour garder ton adresse fonctionnelle avec /repo/
           path: './fdroid'
 
+          
       - name: Déployer sur GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
