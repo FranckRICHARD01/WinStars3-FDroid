@@ -30,6 +30,11 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Installer apksigner et Java (requis pour la signature)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y apksigner openjdk-17-jdk
+
       - name: Installer F-Droid Server
         run: |
           pip install fdroidserver pyyaml
