@@ -6,9 +6,6 @@ on:
       - main
   workflow_dispatch:
 
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
-
 permissions:
   contents: read
   pages: write
@@ -40,7 +37,6 @@ jobs:
       - name: Générer l'index du dépôt F-Droid
         run: |
           cd fdroid
-          # Régénère l'index à partir des APKs présents dans fdroid/repo
           fdroid update --create-metadata
 
       - name: Configurer Pages
