@@ -35,33 +35,12 @@ jobs:
 
       - name: Installer F-Droid Server
         run: |
-          pip install fdroidserver
+          pip install fdroidserver pyyaml
 
-      - name: Préparer l'environnement et générer l'index
+      - name: Générer l'index du dépôt F-Droid
         run: |
           cd fdroid
-          mkdir -p metadata repo
-
-          # Initialiser seulement si config.yml n'existe pas encore
-          if [ ! -f config.yml ]; then
-            fdroid init --no-prompt
-          fi
-
-          # Écraser proprement les valeurs clés dans config.yml
-          python3 - <<'EOF'
-          import yaml
-
-          with open("config.yml", "r") as f:
-              config = yaml.safe_load(f) or {}
-
-          config["repo_name"] = "WinStars 3"
-          config["repo_url"] = "https://franckrichard01.github.io/WinStars3-FDroid/repo"
-          config["repo_description"] = "F-Droid repository for WinStars 3"
-
-          with open("config.yml", "w") as f:
-              yaml.dump(config, f, default_flow_style=False, allow_unicode=True)
-          EOF
-
+          # Régénère l'index à partir des APKs présents dans fdroid/repo
           fdroid update --create-metadata
 
       - name: Configurer Pages
@@ -70,10 +49,9 @@ jobs:
       - name: Téléverser les fichiers du dépôt
         uses: actions/upload-pages-artifact@v3
         with:
-          # On publie le dossier global pour garder ton adresse fonctionnelle avec /repo/
           path: './fdroid'
 
-          
       - name: Déployer sur GitHub Pages
         id: deployment
+        uses: actions/deploy-pages@v4
         uses: actions/deploy-pages@v4
